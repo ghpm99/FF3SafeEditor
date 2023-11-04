@@ -1,1 +1,5 @@
 print('main')
+file = open("save/SAVE.BIN", "rb")
+content = file.read()
+print(content[0x0009])
+file.close()
