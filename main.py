@@ -1,4 +1,5 @@
 from io import BufferedReader
+import struct
 
 
 class SaveStruct:
@@ -6,30 +7,42 @@ class SaveStruct:
     dig_verify = b''
     dump_random = b''
     name = b''
-    level = b''
-    exp = b''
-    strength = b''
+    level: int
+    exp: int
+    hp: int
+    current_hp: int
+    strength: int
+    agility: int
+    vitality: int
+    intellect: int
+    mind: int
+    attack: int
+    defense: int
+    magic_defense: int
 
     def __init__(self, file: BufferedReader):
         self.dig_verify = file.read(16)
         self.dump_random = file.read(73)
-        self.name = file.read(6)
-
-    def print_name(self):
-        print(self.name)
+        self.name = struct.unpack("6s", file.read(6))
+        file.seek(0x0083)
+        self.level = struct.unpack("b", file.read(1))
+        self.exp = struct.unpack("h", file.read(2))
+        file.seek(0x008c)
+        self.hp = struct.unpack("h", file.read(2))
+        print(file.read(2))
+        self.current_hp = struct.unpack("h", file.read(2))
+        file.seek(0x00ac)
+        self.strength = struct.unpack("b", file.read(1))
+        self.agility = struct.unpack("b", file.read(1))
+        self.vitality = struct.unpack("b", file.read(1))
+        self.intellect = struct.unpack("b", file.read(1))
+        self.mind = struct.unpack("b", file.read(1))
 
 
 file = open("save/SAVE_3.BIN", "rb")
-# print(file.read())
-content = file.read()
-data = content.split(
-    b'\x63\x64\x31\x30\x30\x30\x00\x45\x55\x52\x65\x4b\x61\x00\x00\x00'
-)
-for save_byte in data:
-    print(len(save_byte))  # 15152 bytes
-    print(save_byte[:128])
-# save = SaveStruct(file)
-# save.print_name()
+print(file.read(16))
+save = SaveStruct(file)
+print(save.__dict__)
 
 file.close()
 
