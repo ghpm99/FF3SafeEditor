@@ -19,11 +19,17 @@ class SaveStruct:
         print(self.name)
 
 
-file = open("save/SAVE.BIN", "rb")
-print(file.read(16))
-
-save = SaveStruct(file)
-save.print_name()
+file = open("save/SAVE_3.BIN", "rb")
+# print(file.read())
+content = file.read()
+data = content.split(
+    b'\x63\x64\x31\x30\x30\x30\x00\x45\x55\x52\x65\x4b\x61\x00\x00\x00'
+)
+for save_byte in data:
+    print(len(save_byte))  # 15152 bytes
+    print(save_byte[:128])
+# save = SaveStruct(file)
+# save.print_name()
 
 file.close()
 
